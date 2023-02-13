@@ -6,12 +6,13 @@ import bo.edu.ucb.currency.exception.CurrencyServiceException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.logging.Logger;
 
 @Service
 public class CurrencyBl {
@@ -20,16 +21,18 @@ public class CurrencyBl {
     @Value("${currency.api_key}")
     private String api_key;
 
-    private static Logger logger = Logger.getLogger(CurrencyBl.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(CurrencyBl.class.getName());
 
     public ResponseDto currency(String to, String from, BigDecimal amount) throws CurrencyException, CurrencyServiceException, IOException {
+        logger.info("Starting the Business Logic layer");
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
-            logger.warning("El monto debe ser mayor a 0");
-            throw new CurrencyException("El monto debe ser mayor a 0");
+            logger.error("Amount must be greater than 0");
+            throw new CurrencyException("Amount must be greater than 0");
         }
-        logger.info("Iniciando la llamada al servicio externo");
+        logger.info("Starting the external service call");
         ResponseDto responseDto = currencyService(to, from, amount);
-        logger.info("Finalizando la llamada al servicio externo");
+        logger.info("Finishing the external service call");
+        logger.info("Finishing the Business Logic layer");
         return responseDto;
     }
 
@@ -43,15 +46,16 @@ public class CurrencyBl {
         Call call = client.newCall(request);
         try {
             Response response = call.execute();
+            String stringResponse = response.body().string();
             if (response.isSuccessful()) {
-                return responseDto(response.body().string());
+                logger.info("Successful external service call");
+                return responseDto(stringResponse);
             }
-            String error = response.body().string();
-            logger.warning("Error al consumir el servicio externo");
-            logger.info(error);
-            throw new CurrencyServiceException(error);
+            logger.error("Error calling the external service");
+            logger.error(stringResponse);
+            throw new CurrencyServiceException(stringResponse);
         } catch (IOException e) {
-            logger.warning("Error al consumir el servicio externo");
+            logger.error("Error calling the external service");
             logger.info(e.getMessage());
             throw new IOException(e.getMessage());
         }

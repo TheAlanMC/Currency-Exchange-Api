@@ -7,33 +7,35 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import okhttp3.*
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.io.IOException
 import java.math.BigDecimal
-import java.util.logging.Logger
 
 
 @Service
 class CurrencyBl {
     companion object {
-        private val logger = Logger.getLogger(CurrencyBl::class.java.name)
+        private val logger = LoggerFactory.getLogger(CurrencyBl::class.java.name)
     }
 
     @Value("\${currency.url}")
     private val url: String? = null
 
     @Value("\${currency.api_key}")
-    private val api_key: String? = null
+    private val apiKey: String? = null
     @Throws(CurrencyException::class, CurrencyServiceException::class, IOException::class)
     fun currency(to: String, from: String, amount: BigDecimal): ResponseDto {
+        logger.info("Starting the Business Logic layer")
         if (amount < BigDecimal.ZERO) {
-            logger.warning("El monto debe ser mayor a 0")
-            throw CurrencyException("El monto debe ser mayor a 0")
+            logger.error("Amount must be greater than 0")
+            throw CurrencyException("Amount must be greater than 0")
         }
-        logger.info("Iniciando la llamada al servicio externo")
+        logger.info("Starting the external service call")
         val responseDto: ResponseDto = currencyService(to, from, amount)
-        logger.info("Finalizando la llamada al servicio externo")
+        logger.info("Finishing the external service call")
+        logger.info("Finishing the Business Logic layer")
         return responseDto
     }
 
@@ -42,21 +44,21 @@ class CurrencyBl {
         val client = OkHttpClient()
         val request: Request = Request.Builder()
             .url("$url?from=$from&to=$to&amount=$amount")
-            .addHeader("apiKey", api_key)
+            .addHeader("apiKey", apiKey)
             .build()
         val call: Call = client.newCall(request)
         try {
             val response: Response = call.execute()
             val stringResponse: String = response.body().string()
             if (response.isSuccessful) {
-                logger.info("Consumo exitoso del servicio externo")
+                logger.info("Successful external service call")
                 return responseDto(stringResponse)
             }
-            logger.warning("Error al consumir el servicio externo")
-            logger.info(stringResponse)
+            logger.error("Error calling the external service")
+            logger.error(stringResponse)
             throw CurrencyServiceException(stringResponse)
         } catch (e: IOException) {
-            logger.warning("Error al consumir el servicio externo")
+            logger.error("Error calling the external service")
             logger.info(e.message)
             throw IOException(e.message)
         }

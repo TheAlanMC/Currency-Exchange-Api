@@ -4,7 +4,6 @@ import bo.edu.ucb.currencykt.dto.ErrorDto
 import bo.edu.ucb.currencykt.exception.CurrencyException
 import bo.edu.ucb.currencykt.exception.CurrencyServiceException
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.springframework.http.HttpStatus
