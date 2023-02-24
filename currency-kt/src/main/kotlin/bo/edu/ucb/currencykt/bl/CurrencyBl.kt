@@ -1,5 +1,7 @@
 package bo.edu.ucb.currencykt.bl
 
+import bo.edu.ucb.currencykt.dao.Currency
+import bo.edu.ucb.currencykt.dao.repository.CurrencyRepository
 import bo.edu.ucb.currencykt.dto.ResponseDto
 import bo.edu.ucb.currencykt.exception.CurrencyException
 import bo.edu.ucb.currencykt.exception.CurrencyServiceException
@@ -8,14 +10,17 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import okhttp3.*
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.io.IOException
 import java.math.BigDecimal
+import java.util.*
 
 
 @Service
-class CurrencyBl {
+class CurrencyBl @Autowired constructor(private val currencyRepository: CurrencyRepository)
+{
     companion object {
         private val logger = LoggerFactory.getLogger(CurrencyBl::class.java.name)
     }
@@ -52,7 +57,15 @@ class CurrencyBl {
             val stringResponse: String = response.body().string()
             if (response.isSuccessful) {
                 logger.info("Successful external service call")
-                return responseDto(stringResponse)
+                val responseDto: ResponseDto = responseDto(stringResponse)
+                val currency: Currency = Currency()
+                currency.currencyTo = to
+                currency.currencyFrom = from
+                currency.amount = amount
+                currency.result = responseDto.result
+                currency.date = Date()
+                currencyRepository.save(currency)
+                return responseDto
             }
             logger.error("Error calling the external service")
             logger.error(stringResponse)
