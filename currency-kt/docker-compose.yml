@@ -5,8 +5,8 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: software
     volumes:
       - /Users/chrisalanapazaaguilar/Desktop/SIS-311/docker/postgres:/var/lib/postgresql/data
@@ -18,6 +18,8 @@ services:
       - "8080:8080"
     environment:
       URL: ${POSTGRES_URL}
+      USERNAME: ${POSTGRES_USER}
+      PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
         - /Users/chrisalanapazaaguilar/Desktop/SIS-311/docker/spring:/var/log
     depends_on:

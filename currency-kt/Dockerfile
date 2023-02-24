@@ -1,6 +1,6 @@
 FROM eclipse-temurin:11-jdk
 COPY target/*.jar app.jar
-ENV USERNAME "postgres"
-ENV PASSWORD "mysecretpassword"
-ENV URL "jdbc:postgresql://localhost:5432/software"
+ENV USERNAME ${POSTGRES_USER}
+ENV PASSWORD ${POSTGRES_PASSWORD}
+ENV URL ${POSTGRES_URL}
 ENTRYPOINT ["java","-jar","/app.jar"]
