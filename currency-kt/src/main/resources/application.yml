@@ -9,7 +9,9 @@ spring:
     type: org.postgresql.jdbc2.optional.SimpleDataSource
     username: ${USERNAME:postgres}
     password: ${PASSWORD:mysecretpassword}
-    url: ${URL:jdbc:postgresql://localhost:5432/software}
+    url: ${URL:jdbc:postgresql://localhost:5432/}
+  config:
+    import: optional:file:.env[.properties]
 
   jpa:
     hibernate:
