@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: software
     volumes:
-      - /Users/chrisalanapazaaguilar/Desktop/SIS-311/docker/podockestgres:/var/lib/postgresql/data
+      - /Users/chrisalanapazaaguilar/Desktop/SIS-311/docker/postgres:/var/lib/postgresql/data
   currency-converter:
     image: demo_currency:1.0.0
     restart: always
