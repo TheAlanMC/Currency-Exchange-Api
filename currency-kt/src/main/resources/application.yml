@@ -2,14 +2,14 @@ currency:
   url: ${API_URL}
   api_key: ${API_KEY}
 server:
-    port: 8080
+  port: 8080
 
 spring:
   datasource:
     type: org.postgresql.jdbc2.optional.SimpleDataSource
     username: ${USERNAME:postgres}
     password: ${PASSWORD:mysecretpassword}
-    url: ${URL:jdbc:postgresql://localhost:5432/}
+    url: ${URL:jdbc:postgresql://localhost:5432/software}
   config:
     import: optional:file:.env[.properties]
 
