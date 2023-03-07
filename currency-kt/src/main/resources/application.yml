@@ -1,8 +1,9 @@
 currency:
-  url: ${API_URL}
+  url: ${API_URL:https://api.apilayer.com/exchangerates_data/convert}
   api_key: ${API_KEY}
+
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 spring:
   datasource:
@@ -10,11 +11,13 @@ spring:
     username: ${USERNAME:postgres}
     password: ${PASSWORD:mysecretpassword}
     url: ${URL:jdbc:postgresql://localhost:5432/software}
-  config:
-    import: optional:file:.env[.properties]
 
   jpa:
     hibernate:
       ddl-auto: update
+
   application:
     name: currency-converter
+
+  config:
+    import: optional:file:.env[.properties]

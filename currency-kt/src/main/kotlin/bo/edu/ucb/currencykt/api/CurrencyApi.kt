@@ -5,6 +5,7 @@ import bo.edu.ucb.currencykt.dto.ResponseDto
 import bo.edu.ucb.currencykt.exception.CurrencyException
 import bo.edu.ucb.currencykt.exception.CurrencyServiceException
 import org.slf4j.LoggerFactory
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -26,6 +27,7 @@ class CurrencyApi(currencyBl: CurrencyBl) {
     }
 
     @GetMapping
+//    @CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
     @Throws(CurrencyException::class, CurrencyServiceException::class, IOException::class)
     fun currency(
         @RequestParam to: String,

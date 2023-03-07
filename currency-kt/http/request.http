@@ -1,2 +1,2 @@
 ###
-GET http://localhost:8080/v1/api/currency?from=EUR&to=USD&amount=1
+GET http://localhost:8080/v1/api/currency?from=EUR&to=USD&amount=-1
