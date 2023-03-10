@@ -1,13 +1,14 @@
 package bo.edu.ucb.currencykt.api
 
 import bo.edu.ucb.currencykt.bl.CurrencyBl
+import bo.edu.ucb.currencykt.dao.Currency
 import bo.edu.ucb.currencykt.dto.ResponseDto
 import bo.edu.ucb.currencykt.exception.CurrencyException
 import bo.edu.ucb.currencykt.exception.CurrencyServiceException
 import org.slf4j.LoggerFactory
-import org.springframework.data.rest.core.annotation.RepositoryRestResource
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -18,20 +19,13 @@ import java.security.Principal
 
 @RestController
 @RequestMapping("/v1/api/currency")
-class CurrencyApi(currencyBl: CurrencyBl) {
+class CurrencyApi @Autowired constructor(private val currencyBl: CurrencyBl) {
     companion object {
         private val logger = LoggerFactory.getLogger(CurrencyApi::class.java.name)
     }
 
-    private val currencyBl: CurrencyBl
-
-    init {
-        this.currencyBl = currencyBl
-    }
-
     @GetMapping
 //    @CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
-    @Throws(CurrencyException::class, CurrencyServiceException::class, IOException::class)
     fun currency(
         @RequestParam to: String,
         @RequestParam from: String,
@@ -42,6 +36,36 @@ class CurrencyApi(currencyBl: CurrencyBl) {
         logger.info("Finishing the API call")
         return result
     }
+
+    @GetMapping("/all")
+    fun all(
+        @RequestParam(required = false) orderBy: String?,
+        @RequestParam(required = false) order: String?,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): Page<Currency> {
+        logger.info("Starting the API call")
+        val result: Page<Currency> = currencyBl.all(orderBy, order, page, size)
+        logger.info("Finishing the API call")
+        return result
+    }
+
+    @GetMapping("/all/dates")
+    fun allByDates(
+        @RequestParam(required = false) orderBy: String?,
+        @RequestParam(required = false) order: String?,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int,
+        @RequestParam dateFrom: String,
+        @RequestParam dateTo: String
+    ): Page<Currency> {
+        logger.info("Starting the API call")
+        val result: Page<Currency> = currencyBl.allByDates(orderBy, order, page, size, dateFrom, dateTo)
+        logger.info("Finishing the API call")
+        return result
+    }
+
+
 
     @GetMapping("/user")
     @PreAuthorize("hasAuthority('ROLE_USER')")
@@ -61,5 +85,6 @@ class CurrencyApi(currencyBl: CurrencyBl) {
     fun info(principal: Principal): String {
         return principal.toString()
     }
+
 
 }

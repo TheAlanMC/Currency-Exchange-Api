@@ -25,9 +25,6 @@ class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(CurrencyServiceException::class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    @Throws(
-        JsonProcessingException::class
-    )
     fun handleInternalServerError(e: CurrencyServiceException): ErrorDto {
         return errorDto(e.message!!)
     }
