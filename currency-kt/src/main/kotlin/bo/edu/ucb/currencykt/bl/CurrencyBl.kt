@@ -1,12 +1,10 @@
 package bo.edu.ucb.currencykt.bl
 
 import bo.edu.ucb.currencykt.dao.Currency
-import bo.edu.ucb.currencykt.dao.repository.CurrencyListRepository
 import bo.edu.ucb.currencykt.dao.repository.CurrencyRepository
 import bo.edu.ucb.currencykt.dto.ResponseDto
 import bo.edu.ucb.currencykt.exception.CurrencyException
 import bo.edu.ucb.currencykt.exception.CurrencyServiceException
-import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import okhttp3.*
@@ -27,8 +25,7 @@ import java.util.*
 
 @Service
 class CurrencyBl @Autowired constructor(
-    private val currencyRepository: CurrencyRepository,
-    private val currencyListRepository: CurrencyListRepository
+    private val currencyRepository: CurrencyRepository
     )
 {
     companion object {
@@ -93,7 +90,7 @@ class CurrencyBl @Autowired constructor(
     fun all(orderBy: String?, order: String?, page: Int, size: Int): Page<Currency> {
         logger.info("Starting the Business Logic layer")
         val pageable: Pageable = getPageable(page, size, orderBy, order)
-        val response: Page<Currency> = currencyListRepository.findAll(pageable)
+        val response: Page<Currency> = currencyRepository.findAll(pageable)
         logger.info("Finishing the Business Logic layer")
         return response
     }
@@ -102,10 +99,7 @@ class CurrencyBl @Autowired constructor(
         logger.info("Starting the Business Logic layer")
         val pageable: Pageable = getPageable(page, size, orderBy, order)
         val format: DateFormat = SimpleDateFormat("yyyy-MM-dd")
-        val dateFrom: Date = format.parse(dateFrom)
-        val dateTo: Date = format.parse(dateTo)
-        println(dateFrom)
-        val response: Page<Currency> = currencyListRepository.findAllByDateBetween(dateFrom, dateTo, pageable)
+        val response: Page<Currency> = currencyRepository.findAllByDateBetween(format.parse(dateFrom), format.parse(dateTo), pageable)
         logger.info("Finishing the Business Logic layer")
         return response
     }

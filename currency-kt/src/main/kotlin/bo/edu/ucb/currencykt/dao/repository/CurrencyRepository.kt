@@ -1,8 +1,14 @@
 package bo.edu.ucb.currencykt.dao.repository
-
 import bo.edu.ucb.currencykt.dao.Currency
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.repository.PagingAndSortingRepository
 import org.springframework.data.rest.core.annotation.RepositoryRestResource
+import java.util.*
 
 @RepositoryRestResource(exported = false)
-interface CurrencyRepository: CrudRepository<Currency, Long>
+interface CurrencyRepository  : PagingAndSortingRepository<Currency, Long> {
+    fun findAllByDateBetween(startDate: Date, endDate: Date, pageable: Pageable): Page<Currency>
+    override fun findAll(pageable: Pageable): Page<Currency>
+}
+
