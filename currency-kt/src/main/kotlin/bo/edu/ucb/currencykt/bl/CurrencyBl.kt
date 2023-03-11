@@ -90,17 +90,10 @@ class CurrencyBl @Autowired constructor(
     fun all(orderBy: String?, order: String?, page: Int, size: Int,dateFrom: String?,dateTo: String?): Page<Currency> {
         logger.info("Starting the Business Logic layer")
         val pageable: Pageable = getPageable(page, size, orderBy, order)
-        val response: Page<Currency>
-        if(dateFrom == null || dateTo == null || dateFrom.isEmpty() || dateTo.isEmpty()){
-            response = currencyRepository.findAll(pageable)
+        val response: Page<Currency> = if(dateFrom == null || dateTo == null || dateFrom.isEmpty() || dateTo.isEmpty()){
+            currencyRepository.findAll(pageable)
         }else{
-            val format: DateFormat = SimpleDateFormat("yyyy-MM-dd")
-            val dateFrom: Date = format.parse(dateFrom)
-            val calendar: Calendar = Calendar.getInstance()
-            calendar.time = format.parse(dateTo)
-            calendar.add(Calendar.DATE, 1)
-            val dateTo: Date = calendar.time
-            response = currencyRepository.findAllByDateBetween(dateFrom, dateTo, pageable)
+            dateFilter(dateFrom,dateTo,pageable)
         }
         logger.info("Finishing the Business Logic layer")
         return response
@@ -113,5 +106,26 @@ class CurrencyBl @Autowired constructor(
             Sort.by(Sort.Direction.fromString(order), orderBy)
         })
         return PageRequest.of(page, size, sort)
+    }
+
+    fun dateFilter(dateFrom: String, dateTo: String, pageable: Pageable): Page<Currency>{
+        if (!validateDateInterval(dateFrom, dateTo)) {
+            logger.error("Date interval is not valid")
+            throw CurrencyException("Date interval is not valid")
+        }
+        val format: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val dateFrom: Date = format.parse(dateFrom)
+        val calendar: Calendar = Calendar.getInstance()
+        calendar.time = format.parse(dateTo)
+        calendar.add(Calendar.DATE, 1)
+        val dateTo: Date = calendar.time
+        return currencyRepository.findAllByDateBetween(dateFrom, dateTo, pageable)
+    }
+
+    fun validateDateInterval(dateFrom: String, dateTo: String): Boolean {
+        val format: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val dateFrom: Date = format.parse(dateFrom)
+        val dateTo: Date = format.parse(dateTo)
+        return dateFrom.before(dateTo) || dateFrom == dateTo
     }
 }
