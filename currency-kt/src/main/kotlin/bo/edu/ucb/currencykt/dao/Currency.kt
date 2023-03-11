@@ -1,5 +1,6 @@
 package bo.edu.ucb.currencykt.dao
 
+import net.minidev.json.annotate.JsonIgnore
 import java.math.BigDecimal
 import java.util.Date
 import javax.persistence.*
@@ -12,6 +13,7 @@ class Currency (
     var result: BigDecimal,
     var date: Date,
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long = 0,
 ){
