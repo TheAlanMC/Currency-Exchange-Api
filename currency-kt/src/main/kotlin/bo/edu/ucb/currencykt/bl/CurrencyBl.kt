@@ -87,30 +87,27 @@ class CurrencyBl @Autowired constructor(
         return objectMapper.readValue(response)
     }
 
-    fun all(orderBy: String?, order: String?, page: Int, size: Int): Page<Currency> {
+    fun all(orderBy: String?, order: String?, page: Int, size: Int,dateFrom: String?,dateTo: String?): Page<Currency> {
         logger.info("Starting the Business Logic layer")
         val pageable: Pageable = getPageable(page, size, orderBy, order)
-        val response: Page<Currency> = currencyRepository.findAll(pageable)
-        logger.info("Finishing the Business Logic layer")
-        return response
-    }
-
-    fun allByDates(orderBy: String?, order: String?, page: Int, size: Int, dateFrom: String, dateTo: String): Page<Currency> {
-        logger.info("Starting the Business Logic layer")
-        val pageable: Pageable = getPageable(page, size, orderBy, order)
-        val format: DateFormat = SimpleDateFormat("yyyy-MM-dd")
-        val dateFrom: Date = format.parse(dateFrom)
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.time = format.parse(dateTo)
-        calendar.add(Calendar.DATE, 1)
-        val dateTo: Date = calendar.time
-        val response: Page<Currency> = currencyRepository.findAllByDateBetween(dateFrom, dateTo, pageable)
+        val response: Page<Currency>
+        if(dateFrom == null || dateTo == null || dateFrom.isEmpty() || dateTo.isEmpty()){
+            response = currencyRepository.findAll(pageable)
+        }else{
+            val format: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+            val dateFrom: Date = format.parse(dateFrom)
+            val calendar: Calendar = Calendar.getInstance()
+            calendar.time = format.parse(dateTo)
+            calendar.add(Calendar.DATE, 1)
+            val dateTo: Date = calendar.time
+            response = currencyRepository.findAllByDateBetween(dateFrom, dateTo, pageable)
+        }
         logger.info("Finishing the Business Logic layer")
         return response
     }
 
     fun getPageable(page: Int, size: Int, orderBy: String?, order: String?): Pageable {
-        val sort: Sort = (if (orderBy == null || order == null) {
+        val sort: Sort = (if (orderBy == null || order == null || orderBy.isEmpty() || order.isEmpty()) {
             Sort.by(Sort.Direction.ASC, "id")
         } else {
             Sort.by(Sort.Direction.fromString(order), orderBy)
