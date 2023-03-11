@@ -1,6 +1,7 @@
 package bo.edu.ucb.currencykt.config
 
 import bo.edu.ucb.currencykt.dto.ErrorDto
+import bo.edu.ucb.currencykt.dto.ErrorResponseDto
 import bo.edu.ucb.currencykt.exception.CurrencyException
 import bo.edu.ucb.currencykt.exception.CurrencyServiceException
 import com.fasterxml.jackson.core.JsonProcessingException
@@ -18,8 +19,9 @@ class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(CurrencyException::class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ResponseBody
-    fun handleBadRequest(e: CurrencyException): MutableMap<String, String?>? {
-        return java.util.Map.of("error", e.message)
+    fun handleBadRequest(e: CurrencyException):ErrorDto {
+        val errorResponseDto = ErrorResponseDto("bad request", e.message!!)
+        return ErrorDto(errorResponseDto)
     }
 
     @ExceptionHandler(CurrencyServiceException::class)
@@ -32,11 +34,11 @@ class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(Exception::class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    fun handleInternalServerError(e: Exception): Map<String, String?> {
-        return java.util.Map.of("error", e.message)
+    fun handleInternalServerError(e: Exception): ErrorDto {
+        val errorResponseDto = ErrorResponseDto("internal server error", e.message!!)
+        return ErrorDto(errorResponseDto)
     }
 
-    @Throws(JsonProcessingException::class)
     fun errorDto(response: String): ErrorDto {
         val objectMapper = jacksonObjectMapper()
         return objectMapper.readValue(response)
