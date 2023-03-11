@@ -5,7 +5,7 @@ GET http://localhost:8080/v1/api/currency?from=EUR&to=USD&amount=1
 GET http://localhost:8080/v1/api/currency/all?page=5&size=10&order=desc&orderBy=amount
 
 ### Get all currencies by date
-GET http://localhost:8080/v1/api/currency/all/dates?dateFrom=2023-02-01&dateTo=2023-03-01&page=1&size=10&order=desc&orderBy=amount
+GET http://localhost:8080/v1/api/currency/all/dates?dateFrom=2023-03-10&dateTo=2023-03-11&page=0&size=10&order=desc&orderBy=date
 
 ### User
 GET http://localhost:8080/v1/api/currency/user

@@ -99,7 +99,12 @@ class CurrencyBl @Autowired constructor(
         logger.info("Starting the Business Logic layer")
         val pageable: Pageable = getPageable(page, size, orderBy, order)
         val format: DateFormat = SimpleDateFormat("yyyy-MM-dd")
-        val response: Page<Currency> = currencyRepository.findAllByDateBetween(format.parse(dateFrom), format.parse(dateTo), pageable)
+        val dateFrom: Date = format.parse(dateFrom)
+        val calendar: Calendar = Calendar.getInstance()
+        calendar.time = format.parse(dateTo)
+        calendar.add(Calendar.DATE, 1)
+        val dateTo: Date = calendar.time
+        val response: Page<Currency> = currencyRepository.findAllByDateBetween(dateFrom, dateTo, pageable)
         logger.info("Finishing the Business Logic layer")
         return response
     }
