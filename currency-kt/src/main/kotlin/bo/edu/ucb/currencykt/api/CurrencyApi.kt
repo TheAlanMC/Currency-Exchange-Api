@@ -41,13 +41,15 @@ class CurrencyApi @Autowired constructor(private val currencyBl: CurrencyBl) {
     fun all(
         @RequestParam(required = false) orderBy: String?,
         @RequestParam(required = false) order: String?,
+        @RequestParam(required = false) currencyFrom: String?,
+        @RequestParam(required = false) currencyTo: String?,
         @RequestParam(required = false) dateFrom: String?,
         @RequestParam(required = false) dateTo: String?,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int
     ): Page<Currency> {
         logger.info("Starting the API call")
-        val result: Page<Currency> = currencyBl.all(orderBy, order, page, size, dateFrom, dateTo)
+        val result: Page<Currency> = currencyBl.all(orderBy, order, page, size, currencyFrom, currencyTo, dateFrom, dateTo)
         logger.info("Finishing the API call")
         return result
     }

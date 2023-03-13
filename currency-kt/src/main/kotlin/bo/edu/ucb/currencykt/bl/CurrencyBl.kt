@@ -1,6 +1,7 @@
 package bo.edu.ucb.currencykt.bl
 
 import bo.edu.ucb.currencykt.dao.Currency
+import bo.edu.ucb.currencykt.dao.CurrencySpecification
 import bo.edu.ucb.currencykt.dao.repository.CurrencyRepository
 import bo.edu.ucb.currencykt.dto.ResponseDto
 import bo.edu.ucb.currencykt.exception.CurrencyException
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import java.io.IOException
 import java.math.BigDecimal
@@ -87,14 +89,32 @@ class CurrencyBl @Autowired constructor(
         return objectMapper.readValue(response)
     }
 
-    fun all(orderBy: String?, order: String?, page: Int, size: Int,dateFrom: String?,dateTo: String?): Page<Currency> {
+    fun all(orderBy: String?, order: String?, page: Int, size: Int, currencyFrom: String?, currencyTo:String?, dateFrom: String?,dateTo: String?): Page<Currency> {
         logger.info("Starting the Business Logic layer")
         val pageable: Pageable = getPageable(page, size, orderBy, order)
-        val response: Page<Currency> = if(dateFrom == null || dateTo == null || dateFrom.isEmpty() || dateTo.isEmpty()){
-            currencyRepository.findAll(pageable)
-        }else{
-            dateFilter(dateFrom,dateTo,pageable)
+        val response: Page<Currency>
+        var specification: Specification<Currency> = Specification.where(null)
+
+        if (!dateFrom.isNullOrEmpty() && !dateTo.isNullOrEmpty()) {
+            if (!validateDateInterval(dateFrom, dateTo)) {
+                logger.error("Date interval is not valid")
+                throw CurrencyException("Date interval is not valid")
+            }
+        val format: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val dateFrom: Date = format.parse(dateFrom)
+        val calendar: Calendar = Calendar.getInstance()
+        calendar.time = format.parse(dateTo)
+        calendar.add(Calendar.DATE, 1)
+        val dateTo: Date = calendar.time
+            specification = specification.and(specification.and(CurrencySpecification.dateBetween(dateFrom, dateTo)))
         }
+        if (!currencyFrom.isNullOrEmpty()) {
+            specification = specification.and(specification.and(CurrencySpecification.currencyFrom(currencyFrom)))
+        }
+        if (!currencyTo.isNullOrEmpty()) {
+            specification = specification.and(CurrencySpecification.currencyTo(currencyTo))
+        }
+        response = currencyRepository.findAll(specification, pageable)
         logger.info("Finishing the Business Logic layer")
         return response
     }
@@ -106,20 +126,6 @@ class CurrencyBl @Autowired constructor(
             Sort.by(Sort.Direction.fromString(order), orderBy)
         })
         return PageRequest.of(page, size, sort)
-    }
-
-    fun dateFilter(dateFrom: String, dateTo: String, pageable: Pageable): Page<Currency>{
-        if (!validateDateInterval(dateFrom, dateTo)) {
-            logger.error("Date interval is not valid")
-            throw CurrencyException("Date interval is not valid")
-        }
-        val format: DateFormat = SimpleDateFormat("yyyy-MM-dd")
-        val dateFrom: Date = format.parse(dateFrom)
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.time = format.parse(dateTo)
-        calendar.add(Calendar.DATE, 1)
-        val dateTo: Date = calendar.time
-        return currencyRepository.findAllByDateBetween(dateFrom, dateTo, pageable)
     }
 
     fun validateDateInterval(dateFrom: String, dateTo: String): Boolean {
