@@ -9,7 +9,6 @@ import java.util.*
 
 @RepositoryRestResource(exported = false)
 interface CurrencyRepository  : PagingAndSortingRepository<Currency, Long> {
-    fun findAllByDateBetween(startDate: Date, endDate: Date, pageable: Pageable): Page<Currency>
     fun findAll(specification: Specification<Currency>, pageable: Pageable): Page<Currency>
 
 }

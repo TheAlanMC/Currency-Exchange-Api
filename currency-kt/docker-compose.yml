@@ -16,7 +16,7 @@ services:
       - my-network
 
   currency-converter:
-    image: demo_currency:6.0.0
+    image: demo_currency:7.0.0
     restart: always
     mem_limit: 512m
     ports:
@@ -35,7 +35,7 @@ services:
       - my-network
 
   angular:
-    image: angular_currency:3.0.0
+    image: angular_currency:4.0.0
     restart: always
     ports:
       - "4200:80"
