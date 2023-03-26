@@ -8,7 +8,7 @@ import bo.edu.ucb.currencykt.exception.CurrencyServiceException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
-import org.springframework.security.access.prepost.PreAuthorize
+//import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -53,25 +53,25 @@ class CurrencyApi @Autowired constructor(private val currencyBl: CurrencyBl) {
         logger.info("Finishing the API call")
         return result
     }
-
-    @GetMapping("/user")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    fun user(): String {
-        logger.info("Hello user")
-        return "Hello user"
-    }
-
-    @GetMapping("/admin")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    fun admin(): String {
-        logger.info("Hello admin")
-        return "Hello admin"
-    }
-
-    @GetMapping("/principal")
-    fun info(principal: Principal): String {
-        return principal.toString()
-    }
+//
+//    @GetMapping("/user")
+//    @PreAuthorize("hasAuthority('ROLE_USER')")
+//    fun user(): String {
+//        logger.info("Hello user")
+//        return "Hello user"
+//    }
+//
+//    @GetMapping("/admin")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    fun admin(): String {
+//        logger.info("Hello admin")
+//        return "Hello admin"
+//    }
+//
+//    @GetMapping("/principal")
+//    fun info(principal: Principal): String {
+//        return principal.toString()
+//    }
 
 
 }

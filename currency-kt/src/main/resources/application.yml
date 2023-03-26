@@ -21,3 +21,30 @@ spring:
 
   config:
     import: optional:file:.env[.properties]
+
+keycloak:
+  auth-server-url: http://localhost:8081
+  autodetect-bearer-only: true
+  credentials:
+    secret: RQ7Fdx7IHKHjbQu8hVDjmKINk8DlLQqp
+  realm: software
+  resource: backend
+  ssl-required: external
+  use-resource-role-mappings: false
+  security-constraints:
+    - authRoles:
+        - ADMIN
+      securityCollections:
+        - name: SERVICIOS DE ADMINISTRADOR
+          patterns:
+            - /v1/api/currency/all
+          omitted-methods:
+            - OPTIONS
+    - auth-roles:
+        - USER
+      securityCollections:
+        - name: SERVICIOS DE USUARIO
+          patterns:
+            - /v1/api/currency
+          omitted-methods:
+            - OPTIONS
