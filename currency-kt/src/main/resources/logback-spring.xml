@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/var/log/spring_boot/app_kotlin.log</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/var/log/spring_boot/app_kotlin-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>1MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level ${PID} --- [%thread] %logger{36} : %msg%n</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="FILE" />
+        <appender-ref ref="CONSOLE"  />
+    </root>
+    <logger name="org.springframework" level="info"/>
+</configuration>

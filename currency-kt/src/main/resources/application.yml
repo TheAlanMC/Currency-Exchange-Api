@@ -34,7 +34,7 @@ keycloak:
   security-constraints:
     - authRoles:
         - ADMIN
-      securityCollections:
+      security-collections:
         - name: SERVICIOS DE ADMINISTRADOR
           patterns:
             - /v1/api/currency/all
@@ -42,7 +42,7 @@ keycloak:
             - OPTIONS
     - auth-roles:
         - USER
-      securityCollections:
+      security-collections:
         - name: SERVICIOS DE USUARIO
           patterns:
             - /v1/api/currency
