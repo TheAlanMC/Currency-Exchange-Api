@@ -23,7 +23,7 @@ spring:
     import: optional:file:.env[.properties]
 
 keycloak:
-  auth-server-url: http://localhost:8081
+  auth-server-url: ${KEYCLOAK_URL:http://localhost:8081}
   autodetect-bearer-only: true
   credentials:
     secret: RQ7Fdx7IHKHjbQu8hVDjmKINk8DlLQqp

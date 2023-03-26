@@ -9,7 +9,8 @@
 #
 #ENTRYPOINT ["java","-jar","/app.jar"]
 
-FROM --platform=linux/x86_64 eclipse-temurin:11.0.18_10-jdk-alpine as build
+#FROM --platform=linux/x86_64 eclipse-temurin:11.0.18_10-jdk-alpine as build
+FROM arm64v8/eclipse-temurin:11.0.18_10-jdk as build
 WORKDIR /workspace/app
 
 COPY mvnw .
@@ -21,7 +22,8 @@ RUN ./mvnw install -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 
-FROM eclipse-temurin:11
+#FROM eclipse-temurin:11
+FROM arm64v8/eclipse-temurin:11
 
 VOLUME /tmp
 ARG DEPENDENCY=/workspace/app/target/dependency
