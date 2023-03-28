@@ -1,6 +1,6 @@
 currency:
   url: ${API_URL:https://api.apilayer.com/exchangerates_data/convert}
-  api_key: ${API_KEY}
+  api_key: ${API_KEY:6VZVZCy95XCX8E8C2xcYI2KBDgUGUOE1}
 
 server:
   port: ${PORT:8080}
@@ -19,11 +19,8 @@ spring:
   application:
     name: currency-converter
 
-  config:
-    import: optional:file:.env[.properties]
-
 keycloak:
-  auth-server-url: ${KEYCLOAK_URL:http://localhost:8081}
+  auth-server-url: ${KEYCLOAK_URL:http://localhost:8090}
   autodetect-bearer-only: true
   credentials:
     secret: RQ7Fdx7IHKHjbQu8hVDjmKINk8DlLQqp

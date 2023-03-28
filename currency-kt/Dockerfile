@@ -36,5 +36,6 @@ ENV PASSWORD "mysecretpassword"
 ENV URL "jdbc:postgresql://localhost:5432/postgres"
 ENV API_KEY ""
 ENV PORT 8080
+ENV KEYCLOAK_URL "http://keycloack:8080"
 
 ENTRYPOINT ["java","-cp","app:app/lib/*","bo.edu.ucb.currencykt.CurrencyKtApplicationKt"]

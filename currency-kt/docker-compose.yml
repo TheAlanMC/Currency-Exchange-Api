@@ -15,20 +15,23 @@ services:
       - /Users/chrisalanapazaaguilar/Desktop/SIS-311/docker/postgres:/var/lib/postgresql/data
     networks:
       - my-network
+
   keycloak:
     image: quay.io/keycloak/keycloak:21.0.1
+    command: start-dev
     restart: always
     mem_limit: 512m
     ports:
-      - "8081:8080"
+      - "8090:8090"
     environment:
-        DB_VENDOR: h2
-        KEYCLOAK_USER: admin
-        KEYCLOAK_PASSWORD: admin
+      DB_VENDOR: h2
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HTTP_PORT: 8090
     volumes:
-        - /Users/chrisalanapazaaguilar/Desktop/SIS-311/docker/keycloak:/opt/keycloak/data
+      - /Users/chrisalanapazaaguilar/Desktop/SIS-311/docker/keycloak:/opt/keycloak/data
     networks:
-        - my-network
+      - my-network
 
   currency-converter:
     image: demo_currency:8.0.0
@@ -42,6 +45,7 @@ services:
       PASSWORD: ${POSTGRES_PASSWORD}
       API_KEY: ${API_KEY}
       PORT: 8080
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
     volumes:
       - /Users/chrisalanapazaaguilar/Desktop/SIS-311/docker/spring:/var/log/spring_boot
     depends_on:
