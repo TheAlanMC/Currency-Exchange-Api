@@ -1,21 +1,20 @@
 package bo.edu.ucb.currencykt.api
 
+//import org.springframework.security.access.prepost.PreAuthorize
+
 import bo.edu.ucb.currencykt.bl.CurrencyBl
 import bo.edu.ucb.currencykt.dao.Currency
 import bo.edu.ucb.currencykt.dto.ResponseDto
-import bo.edu.ucb.currencykt.exception.CurrencyException
-import bo.edu.ucb.currencykt.exception.CurrencyServiceException
+import bo.edu.ucb.currencykt.utils.KeycloakSecurityContextHolder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
-//import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.io.IOException
 import java.math.BigDecimal
-import java.security.Principal
+
 
 @RestController
 @RequestMapping("/v1/api/currency")
@@ -31,6 +30,8 @@ class CurrencyApi @Autowired constructor(private val currencyBl: CurrencyBl) {
         @RequestParam from: String,
         @RequestParam amount: BigDecimal
     ): ResponseDto {
+        val email = KeycloakSecurityContextHolder.getEmail()
+        logger.info("Email: $email")
         logger.info("Starting the API call")
         val result: ResponseDto = currencyBl.currency(to, from, amount)
         logger.info("Finishing the API call")

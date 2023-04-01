@@ -19,6 +19,12 @@ spring:
   application:
     name: currency-converter
 
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    serviceUrl:
+#      defaultZone: http://localhost:8761/eureka/
+
 keycloak:
   auth-server-url: ${KEYCLOAK_URL:http://localhost:8090}
   autodetect-bearer-only: true
@@ -26,7 +32,7 @@ keycloak:
     secret: RQ7Fdx7IHKHjbQu8hVDjmKINk8DlLQqp
   realm: software
   resource: backend
-  ssl-required: external
+  ssl-required: none
   use-resource-role-mappings: false
   security-constraints:
     - authRoles:
