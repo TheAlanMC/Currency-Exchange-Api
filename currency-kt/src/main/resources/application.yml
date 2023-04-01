@@ -19,6 +19,17 @@ spring:
   application:
     name: currency-converter
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: barkibu.sis213@gmail.com
+    password: osekrblskoysrpgw
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 #eureka:
 #  client:
 #    register-with-eureka: true

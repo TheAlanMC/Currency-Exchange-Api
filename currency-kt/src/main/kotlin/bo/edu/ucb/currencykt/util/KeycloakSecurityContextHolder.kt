@@ -1,4 +1,4 @@
-package bo.edu.ucb.currencykt.utils
+package bo.edu.ucb.currencykt.util
 
 import org.keycloak.KeycloakSecurityContext
 import org.springframework.web.context.request.RequestContextHolder
@@ -16,11 +16,6 @@ class KeycloakSecurityContextHolder {
         fun getEmail(): String? {
             return getKeycloakSecurityContext()?.token?.email
         }
-
-        fun getFullName(): String? {
-            return getKeycloakSecurityContext()?.token?.name
-        }
-
 
     }
 }
