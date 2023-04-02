@@ -147,7 +147,7 @@ class CurrencyBl @Autowired constructor(
         logger.info("Starting the Business Logic layer to add the email command to the queue")
         val currentDate = LocalDate.now()
         val currentTime = LocalTime.now()
-        val dateFormatter = DateTimeFormatter.ofPattern("mm-dd-yyyy")
+        val dateFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy")
         val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
         val formattedDate = currentDate.format(dateFormatter)
         val formattedTime = currentTime.format(timeFormatter)
