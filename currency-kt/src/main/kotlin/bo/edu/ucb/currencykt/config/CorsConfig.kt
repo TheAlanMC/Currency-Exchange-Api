@@ -31,9 +31,9 @@ class CorsConfig {
         )
         corsConfiguration.allowedMethods = listOf(
             "GET", "POST", "PUT", "DELETE")
-        val urlBasedCorsConfigurationSource = UrlBasedCorsConfigurationSource();
+        val urlBasedCorsConfigurationSource = UrlBasedCorsConfigurationSource()
         urlBasedCorsConfigurationSource
-            .registerCorsConfiguration ("/**", corsConfiguration);
+            .registerCorsConfiguration ("/**", corsConfiguration)
         return CorsFilter (urlBasedCorsConfigurationSource)
     }
 }

@@ -5,7 +5,6 @@ import bo.edu.ucb.currencykt.dto.ErrorDto
 import bo.edu.ucb.currencykt.dto.ErrorResponseDto
 import bo.edu.ucb.currencykt.exception.CurrencyException
 import bo.edu.ucb.currencykt.exception.CurrencyServiceException
-import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.slf4j.LoggerFactory
@@ -43,7 +42,7 @@ class ExceptionHandlerControllerAdvice {
     fun handleInternalServerError(e: Exception): ErrorDto {
         val errorResponseDto = ErrorResponseDto("internal server error", e.message!!)
         val objectMapper = jacksonObjectMapper()
-        var response = objectMapper.writeValueAsString(errorResponseDto)
+        val response = objectMapper.writeValueAsString(errorResponseDto)
         logger.error(response)
         return ErrorDto(errorResponseDto)
     }

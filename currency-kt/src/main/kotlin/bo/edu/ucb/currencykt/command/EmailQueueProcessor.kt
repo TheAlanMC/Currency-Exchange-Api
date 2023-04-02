@@ -10,7 +10,8 @@ class EmailQueueProcessor(private val queue: CommandQueue, private val emailComm
     }
 
     // Process the queue every 5 minutes
-    @Scheduled(fixedRate = 300000)
+    // @Scheduled(fixedRate = 300000)
+    @Scheduled(cron = "0 0/5 * * * *")
     fun processQueue() {
         logger.info("Starting processing the email queue")
         // Get all commands in the queue and group them by to
@@ -21,9 +22,8 @@ class EmailQueueProcessor(private val queue: CommandQueue, private val emailComm
             val combinedContent = emailCommands.joinToString("\n") { it.getContent() }
             val command = emailCommands.first()
             val updatedCommand = emailCommandFactory.create(command.getTo(), command.getSubject(), combinedContent)
-            logger.info("Starting sending the email to ${command.getTo()}")
+            logger.info("Sending the email to ${command.getTo()}")
             updatedCommand.execute()
-            logger.info("Finishing sending the email to ${command.getTo()}")
         }
         queue.clear()
         logger.info("Finishing processing the email queue")

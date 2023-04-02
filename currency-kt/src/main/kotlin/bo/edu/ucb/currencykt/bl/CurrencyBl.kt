@@ -22,6 +22,7 @@ import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import java.io.IOException
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -146,7 +147,7 @@ class CurrencyBl @Autowired constructor(
         logger.info("Starting the Business Logic layer to add the email command to the queue")
         val currentDate = LocalDate.now()
         val currentTime = LocalTime.now()
-        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val dateFormatter = DateTimeFormatter.ofPattern("mm-dd-yyyy")
         val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
         val formattedDate = currentDate.format(dateFormatter)
         val formattedTime = currentTime.format(timeFormatter)
@@ -154,7 +155,12 @@ class CurrencyBl @Autowired constructor(
         // Adding the current date to the email subject
         val subject = "Historial de conversiones realizadas el $formattedDate"
         // Adding the current time and the conversion result to the email content
-        val content = "$formattedTime \t ${responseDto.query.from} ${responseDto.query.amount} = ${responseDto.result} ${responseDto.query.to}"
+        // Use only two decimal places for the BigDecimal
+
+        val content = "$formattedTime \t " +
+                "${responseDto.query.from} ${responseDto.query.amount.setScale(2, RoundingMode.HALF_UP)} " +
+                "= " +
+                "${responseDto.query.to} ${responseDto.result.setScale(2, RoundingMode.HALF_UP)}"
         // Adding the email to the queue
         val emailCommand = emailCommandFactory.create(email, subject, content)
         commandQueue.add(emailCommand)
