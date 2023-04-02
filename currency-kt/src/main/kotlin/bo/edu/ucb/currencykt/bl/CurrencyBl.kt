@@ -1,5 +1,7 @@
 package bo.edu.ucb.currencykt.bl
 
+import bo.edu.ucb.currencykt.command.CommandQueue
+import bo.edu.ucb.currencykt.command.EmailCommandFactory
 import bo.edu.ucb.currencykt.dao.Currency
 import bo.edu.ucb.currencykt.dao.CurrencySpecification
 import bo.edu.ucb.currencykt.dao.repository.CurrencyRepository
@@ -22,12 +24,17 @@ import java.io.IOException
 import java.math.BigDecimal
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
 @Service
 class CurrencyBl @Autowired constructor(
-    private val currencyRepository: CurrencyRepository
+    private val currencyRepository: CurrencyRepository,
+    private val commandQueue: CommandQueue,
+    private val emailCommandFactory: EmailCommandFactory
     )
 {
     companion object {
@@ -133,5 +140,27 @@ class CurrencyBl @Autowired constructor(
         val dateFrom: Date = format.parse(dateFrom)
         val dateTo: Date = format.parse(dateTo)
         return dateFrom.before(dateTo) || dateFrom == dateTo
+    }
+
+    fun addEmailQueue(email: String, responseDto: ResponseDto) {
+        logger.info("Starting the Business Logic layer to add the email command to the queue")
+        val currentDate = LocalDate.now()
+        val currentTime = LocalTime.now()
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
+        val formattedDate = currentDate.format(dateFormatter)
+        val formattedTime = currentTime.format(timeFormatter)
+
+        // Adding the current date to the email subject
+        val subject = "Historial de conversiones realizadas el $formattedDate"
+        // Adding the current time and the conversion result to the email content
+        val content = "$formattedTime \t ${responseDto.query.from} ${responseDto.query.amount} = ${responseDto.result} ${responseDto.query.to}"
+        // Adding the email to the queue
+        val emailCommand = emailCommandFactory.create(email, subject, content)
+        commandQueue.add(emailCommand)
+        // Printing the queue size
+        logger.info("Email command added to the queue")
+        logger.info("Queue size: ${commandQueue.size()}")
+        logger.info("Finishing the Business Logic layer to add the email command to the queue")
     }
 }

@@ -1,15 +1,25 @@
 package bo.edu.ucb.currencykt.command
 
-import bo.edu.ucb.currencykt.dto.ResponseDto
 import bo.edu.ucb.currencykt.service.EmailService
-import java.util.*
 
 class EmailCommand(
     private val emailService: EmailService,
-    var to: String,
-    var subject: String,
-    var content: String
+    private val to: String,
+    private val subject: String,
+    private val content: String
 ) : Command {
+
+    fun getTo(): String {
+        return to
+    }
+
+    fun getSubject(): String {
+        return subject
+    }
+
+    fun getContent(): String {
+        return content
+    }
 
     override fun execute() {
         emailService.sendEmail(to, subject, content)
