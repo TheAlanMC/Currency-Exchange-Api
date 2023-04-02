@@ -25,8 +25,8 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalTime
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -109,12 +109,12 @@ class CurrencyBl @Autowired constructor(
                 throw CurrencyException("Date interval is not valid")
             }
         val format: DateFormat = SimpleDateFormat("yyyy-MM-dd")
-        val dateFrom: Date = format.parse(dateFrom)
+        val newDateFrom: Date = format.parse(dateFrom)
         val calendar: Calendar = Calendar.getInstance()
         calendar.time = format.parse(dateTo)
         calendar.add(Calendar.DATE, 1)
-        val dateTo: Date = calendar.time
-            specification = specification.and(specification.and(CurrencySpecification.dateBetween(dateFrom, dateTo)))
+        val newDateTo: Date = calendar.time
+            specification = specification.and(specification.and(CurrencySpecification.dateBetween(newDateFrom, newDateTo)))
         }
         if (!currencyFrom.isNullOrEmpty()) {
             specification = specification.and(specification.and(CurrencySpecification.currencyFrom(currencyFrom)))
@@ -138,20 +138,19 @@ class CurrencyBl @Autowired constructor(
 
     fun validateDateInterval(dateFrom: String, dateTo: String): Boolean {
         val format: DateFormat = SimpleDateFormat("yyyy-MM-dd")
-        val dateFrom: Date = format.parse(dateFrom)
-        val dateTo: Date = format.parse(dateTo)
-        return dateFrom.before(dateTo) || dateFrom == dateTo
+        val newDateFrom: Date = format.parse(dateFrom)
+        val newDateTo: Date = format.parse(dateTo)
+        return newDateFrom.before(newDateTo) || newDateFrom == newDateTo
     }
 
     fun addEmailQueue(email: String, responseDto: ResponseDto) {
         logger.info("Starting the Business Logic layer to add the email command to the queue")
-        val currentDate = LocalDate.now()
-        val currentTime = LocalTime.now()
-        val dateFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy")
+        val timeZone = ZoneOffset.ofHours(-4)
+        val offsetDateTime = OffsetDateTime.now(timeZone)
+        val dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
         val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
-        val formattedDate = currentDate.format(dateFormatter)
-        val formattedTime = currentTime.format(timeFormatter)
-
+        val formattedDate = dateFormatter.format(offsetDateTime)
+        val formattedTime = timeFormatter.format(offsetDateTime.toLocalTime())
         // Adding the current date to the email subject
         val subject = "Historial de conversiones realizadas el $formattedDate"
         // Adding the current time and the conversion result to the email content

@@ -7,19 +7,19 @@ class CurrencySpecification {
 
     companion object {
         fun currencyFrom(currencyFrom: String): Specification<Currency>{
-            return Specification { root, query, cb ->
+            return Specification { root, _, cb ->
                 cb.like(cb.lower(root.get("currencyFrom")), "%${currencyFrom.lowercase()}%")
             }
         }
 
         fun currencyTo(currencyTo: String): Specification<Currency>{
-            return Specification { root, query, cb ->
+            return Specification { root, _, cb ->
                 cb.like(cb.lower(root.get("currencyTo")), "%${currencyTo.lowercase()}%")
             }
         }
 
         fun dateBetween(dateFrom: Date, dateTo: Date): Specification<Currency>{
-            return Specification { root, query, cb ->
+            return Specification { root, _, cb ->
                 cb.between(root.get("date"), dateFrom, dateTo)
             }
         }
