@@ -23,7 +23,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: proyecto.sis311@gmail.com
-    password: efrfzpncmpxjrkrc
+    password: '{cipher}493706683ae177777e350f11979e51114ea3ea750c4ee0d3653bd4b9cc6a3718c31e520e18d937d12310d3476d6c0d3c'
     properties:
       mail:
         smtp:
