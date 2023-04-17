@@ -23,13 +23,23 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: proyecto.sis311@gmail.com
-    password: '{cipher}493706683ae177777e350f11979e51114ea3ea750c4ee0d3653bd4b9cc6a3718c31e520e18d937d12310d3476d6c0d3c'
+    password: efrfzpncmpxjrkrc
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
+
+  zipkin:
+    enabled: true
+    base-url: http://localhost:9411
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
 eureka:
   client:
