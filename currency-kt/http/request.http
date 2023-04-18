@@ -31,3 +31,6 @@ response_type=code&grant_type=client_credentials&client_id=backend&client_secret
     client.global.set("auth-token", "Bearer " + response.body["access_token"]);
     client.log(client.global.get("auth-token"));
 %}
+
+###
+GET http://localhost:8080/v1/api/currency/test-notification?message=Hello%20World

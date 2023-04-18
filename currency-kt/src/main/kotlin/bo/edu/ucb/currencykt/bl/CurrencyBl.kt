@@ -5,9 +5,11 @@ import bo.edu.ucb.currencykt.command.EmailCommandFactory
 import bo.edu.ucb.currencykt.dao.Currency
 import bo.edu.ucb.currencykt.dao.CurrencySpecification
 import bo.edu.ucb.currencykt.dao.repository.CurrencyRepository
+import bo.edu.ucb.currencykt.dto.NotificationDto
 import bo.edu.ucb.currencykt.dto.ResponseDto
 import bo.edu.ucb.currencykt.exception.CurrencyException
 import bo.edu.ucb.currencykt.exception.CurrencyServiceException
+import bo.edu.ucb.currencykt.producer.NotificationProducer
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import okhttp3.*
@@ -35,7 +37,8 @@ import java.util.*
 class CurrencyBl @Autowired constructor(
     private val currencyRepository: CurrencyRepository,
     private val commandQueue: CommandQueue,
-    private val emailCommandFactory: EmailCommandFactory
+    private val emailCommandFactory: EmailCommandFactory,
+    private val notificationProducer: NotificationProducer
     )
 {
     companion object {
@@ -167,5 +170,12 @@ class CurrencyBl @Autowired constructor(
         logger.info("Email command added to the queue")
         logger.info("Queue size: ${commandQueue.size()}")
         logger.info("Finishing the Business Logic layer to add the email command to the queue")
+    }
+
+    fun sendNotification(message: String){
+        val notificationDto = NotificationDto(message,"Test",Date())
+        logger.info("Sending Notification")
+        notificationProducer.sendNotification(notificationDto)
+        logger.info("Notification sent")
     }
 }

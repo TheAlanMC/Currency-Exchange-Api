@@ -12,12 +12,12 @@ class RabbitMqConfig {
 
     @Bean
     fun notificationExchange(): DirectExchange {
-        return DirectExchange("notificationExchange")
+        return DirectExchange("notification2Exchange")
     }
 
     @Bean
     fun notificationQueue(): Queue {
-        return QueueBuilder.durable("notificationQueue").build()
+        return QueueBuilder.durable("notification2Queue").build()
     }
 
     @Bean
@@ -25,7 +25,7 @@ class RabbitMqConfig {
         return BindingBuilder
             .bind(notificationQueue())
             .to(notificationExchange())
-            .with("notificationRoutingKey")
+            .with("notification2RoutingKey")
     }
 
     @Bean

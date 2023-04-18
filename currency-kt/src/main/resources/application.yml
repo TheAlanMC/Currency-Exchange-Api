@@ -34,18 +34,26 @@ spring:
   zipkin:
     enabled: true
     base-url: http://localhost:9411
+#    discovery-client-enabled: false
 
+  #  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: guest
+#    password: guest
   rabbitmq:
-    host: localhost
+    host:  sparrow-01.rmq.cloudamqp.com
     port: 5672
-    username: guest
-    password: guest
+    username: itggwiot
+    password: FNAc7QotPFaC73UICw8YedtO6GVSspwD
+    virtual-host: itggwiot
 
 eureka:
   client:
     register-with-eureka: true
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+#    enabled: false
 
 keycloak:
   auth-server-url: ${KEYCLOAK_URL:http://localhost:8090}

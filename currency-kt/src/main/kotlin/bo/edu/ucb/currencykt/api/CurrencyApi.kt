@@ -4,6 +4,7 @@ package bo.edu.ucb.currencykt.api
 
 import bo.edu.ucb.currencykt.bl.CurrencyBl
 import bo.edu.ucb.currencykt.dao.Currency
+import bo.edu.ucb.currencykt.dto.NotificationDto
 import bo.edu.ucb.currencykt.dto.ResponseDto
 import bo.edu.ucb.currencykt.util.KeycloakSecurityContextHolder
 import org.slf4j.LoggerFactory
@@ -60,6 +61,14 @@ class CurrencyApi @Autowired constructor(private val currencyBl: CurrencyBl) {
         val result: Page<Currency> = currencyBl.all(orderBy, order, page, size, currencyFrom, currencyTo, dateFrom, dateTo)
         logger.info("Finishing the API call")
         return result
+    }
+
+    @GetMapping("/test-notification")
+    fun notification(
+        @RequestParam message: String,
+    ):String{
+        currencyBl.sendNotification(message)
+        return "Notification sent with message: $message"
     }
 //
 //    @GetMapping("/user")
